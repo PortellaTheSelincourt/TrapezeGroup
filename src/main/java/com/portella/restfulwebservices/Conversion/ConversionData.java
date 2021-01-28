@@ -1,53 +1,35 @@
 package com.portella.restfulwebservices.Conversion;
 
-import org.springframework.util.StringUtils;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * https://stackoverflow.com/questions/12967896/converting-integers-to-roman-numerals-java
  */
 public class ConversionData {
 
-    private final static Map<Character, Integer> map = new HashMap<>();
+    public int convertToDecimal(String romanNumeral) throws Exception {
 
-    static {
-        map.put('I', 1);
-        map.put('V', 5);
-        map.put('X', 10);
-        map.put('L', 50);
-        map.put('C', 100);
-        map.put('D', 500);
-        map.put('M', 1000);
-    }
-
-    private int getRomanNumeralValue(char roman) {
-        if (map.containsKey(roman)) {
-            return map.get(roman);
-        } else {
-            throw new RuntimeException("Roman numeral string contains invalid characters " + roman);
-        }
-    }
-    public int convertRomanToDecimal(String romanDecimal) {
-        String a = romanDecimal.toUpperCase();
-        if (!StringUtils.hasLength(a)) {
-            throw new RuntimeException("Roman numeral string is either null or empty");
-        }
-        else {
-            int index = a.length() - 1;
-            int result = getRomanNumeralValue(a.charAt(index));
-
-            for (int i = index - 1; i >= 0; i--) {
-                if (getRomanNumeralValue(a.charAt(i)) >= getRomanNumeralValue(a.charAt(i + 1))) {
-                    result = result + getRomanNumeralValue(a.charAt(i));
-                }
-                else {
-                    result = result - getRomanNumeralValue(a.charAt(i));
-                }
+        int result = 0;
+        int[] decimal = {1000, 900, 500, 400, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+        String[] roman = {"M", "CM", "D", "CD", "C", "XC", "LXXX", "LXX", "LX", "L", "XL", "XXX", "XX", "X", "IX", "VIII", "VII", "VI", "V", "IV", "III", "II", "I"};
+        Pattern pattern = Pattern.compile("(.)\\1{3,}", Pattern.DOTALL);
+        for (String s: roman){
+            Matcher m = pattern.matcher(s);
+            if (m.find()){
+                throw new Exception("Invalid roman numeral");
             }
-            return result;
         }
-    }
+        if (romanNumeral ==null || romanNumeral.isEmpty()) {
+            throw new Exception("Invalid roman numeral!");
+        }
 
+        for (int i = 0; i < decimal.length; i++) {
+            while (romanNumeral.indexOf(roman[i]) == 0) {
+                result += decimal[i];
+                romanNumeral = romanNumeral.substring(roman[i].length());
+            }
+        }
+        return result;
+    }
 }

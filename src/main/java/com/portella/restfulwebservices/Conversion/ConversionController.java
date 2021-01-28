@@ -10,7 +10,7 @@ public class ConversionController {
 
 
     @GetMapping(path = "/Convert/{romanNumber}")
-    public ConversionBean ConversionDataPathVariable(@PathVariable String romanNumber) {
-       return new ConversionBean(new ConversionData().convertRomanToDecimal(romanNumber));
+    public ConversionBean ConversionDataPathVariable(@PathVariable String romanNumber) throws Exception {
+       return new ConversionBean(new ConversionData().convertToDecimal(romanNumber.toUpperCase()));
    }
 }
